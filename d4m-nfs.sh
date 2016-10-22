@@ -34,7 +34,7 @@ while [ $CHECK -eq 1 ]; do
   CHECK=$?
 done
 
-echo -e "Setup 'screen' to work properly with the D4M tty, while at it name it 'd4f'\n"
+echo -e "Setup 'screen' to work properly with the D4M tty, while at it name it 'd4m'\n"
 screen -AmdS d4m ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty
 
 echo -e "Log into D4M as root so next commands can run\n"
