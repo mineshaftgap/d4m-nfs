@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 docker run                                        \
   --name d4m-tradtional                           \
   --detach=true                                   \

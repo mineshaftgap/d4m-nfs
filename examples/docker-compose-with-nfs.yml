@@ -1,3 +1,5 @@
+# be sure to run ../d4m-nfs.sh before docker-compose
+
 d4m-tradtional:
   container_name: d4m-with-nfs
   image: nginx:mainline-alpine
