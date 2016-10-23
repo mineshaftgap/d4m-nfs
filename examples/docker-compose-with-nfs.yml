@@ -1,0 +1,5 @@
+d4m-tradtional:
+  container_name: d4m-with-nfs
+  image: nginx:mainline-alpine
+  volumes:
+    - /mnt/www:/usr/share/nginx/html
