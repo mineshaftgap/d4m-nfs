@@ -6,6 +6,8 @@ d4m-nfs blantently steals from the way that DockerRoot/xhyve used NFS mounts to 
 
 The advantage of this over a file sync strategy is simpler, less overhead and not having to duplicate files.
 
+In order to make use of NFS, will want to run d4m-nfs.sh before bringing up your containers. You will need to change your volume paths, look at the example directory for docker or docker-compose simple examples.
+
 Please note:
 * Only /Users/$USER directory is mounted, this might change if there is a request to be all user directories, or other locations.
 * The /Users mount under D4M still exists and will continute to be slow, the d4m-nfs mount is under /mnt.
