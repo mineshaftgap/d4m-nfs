@@ -73,7 +73,7 @@ else
     fi
 
     echo -e "Install nfs-utils, make the /mnt dir, start rpcbind, wait, then mount Mac NFS.\n"
-    screen -S d4m -p 0 -X stuff "apk add nfs-utils && mkdir -p /mnt && rpcbind -s && sleep .5 && mount -o nolock,local_lock=all \$(route|awk '/default/ {print \$2}'):/Users/$USER /mnt
+    screen -S d4m -p 0 -X stuff "apk add nfs-utils && mkdir -p /mnt && rpcbind -s && sleep .5 && mount -o nolock,local_lock=all \$(ip route|awk '/default/{print \$3}'):/Users/$USER /mnt
 "
 
     echo "Pausing for NFS mount to be ready so this can be used in another script"
