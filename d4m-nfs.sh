@@ -57,9 +57,25 @@ else
     echo -e "Log into D4M as root so next commands can run.\n"
     screen -S d4m -p 0 -X stuff $(printf "root\\r\\n")
 
-    echo -e "Install nfs-utils, make the /mnt dir, start rpcbind, wait, then mount Mac NFS.\n"
-    screen -S d4m -p 0 -X stuff "apk add --update nfs-utils && mkdir -p /mnt && rpcbind -s && sleep .5 && mount -o nolock,local_lock=all \$(route|awk '/default/ {print \$2}'):/Users/$USER /mnt
+    if [ ! -e ~/d4m-apk-cache/ ]; then
+      echo -e "Make sure persistent apk cache dir on Mac so NFS setup can happen offline"
+      mkdir -p ~/d4m-apk-cache
+    fi
+
+    echo -e "Make symlink to apk cache dir on Mac.\n"
+    screen -S d4m -p 0 -X stuff "ln -s /Users/$USER/d4m-apk-cache /etc/apk/cache
 "
+
+    if ! $(ls ~/d4m-apk-cache|grep APKINDEX > /dev/null 2>&1); then
+      echo -e "Get an apk update.\n"
+      screen -S d4m -p 0 -X stuff "apk update
+"
+    fi
+
+    echo -e "Install nfs-utils, make the /mnt dir, start rpcbind, wait, then mount Mac NFS.\n"
+    screen -S d4m -p 0 -X stuff "apk add nfs-utils && mkdir -p /mnt && rpcbind -s && sleep .5 && mount -o nolock,local_lock=all \$(route|awk '/default/ {print \$2}'):/Users/$USER /mnt
+"
+
     echo "Pausing for NFS mount to be ready so this can be used in another script"
     sleep 1
   fi
