@@ -43,11 +43,13 @@ else
     sleep 0.5
   done
 
-  echo -ne "\nWait until D4M is running."
-  while ! $(ps auxwww|grep docker|grep vmstateevent |grep '"vmstate":"running"' > /dev/null 2>&1); do
-    echo -n "."
-    sleep 1
-  done
+# Docker VM is registering the running state differently at least in the latest version (Version 1.12.3-rc1-beta29 (13397))
+# Removing this check allows the script to fire without error.
+#  echo -ne "\nWait until D4M is running."
+#  while ! $(ps auxwww|grep docker|grep vmstateevent |grep '"vmstate":"running"' > /dev/null 2>&1); do
+#    echo -n "."
+#    sleep 1
+#  done
 
   # check that screen has not already been setup
   if ! $(screen -ls |grep d4m > /dev/null 2>&1); then
