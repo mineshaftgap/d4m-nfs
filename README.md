@@ -15,4 +15,6 @@ Please note:
 * The /Users mount under D4M still exists and will continute to be slow, the d4m-nfs mount is under /mnt.
 * When mounting Docker volumes, you need to change paths like /Users/$USER mounts with /mnt.
 * To connect to the D4M moby linux VM use: screen -r d4m
-* To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d
+* To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d.
+* To run d4m-nfs faster and/or offline, leave ~/d4m-apk-cache and hello-world image.
+* If you switch between D4M stable and beta, you might need to remove ~/d4m-apk-cache and hello-world image.
