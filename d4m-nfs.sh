@@ -1,16 +1,14 @@
 #!/bin/bash
 
 # see if sudo is needed
-sudo -n cat /dev/null > /dev/null 2>&1
-if [ $? -eq 1 ]; then
+if ! $(sudo -n cat /dev/null > /dev/null 2>&1); then
   # get sudo first so the focus for the password is kept in the term, instead of Docker.app
   echo -e "You will need to provide your Mac password in order to setup NFS."
   sudo cat /dev/null
 fi
 
 # check to see if Docker is already running
-ps ax |grep 'Docker.app/Contents/MacOS/Docker' |grep -v grep > /dev/null 2>&1
-if [ $? -eq 1 ]; then
+if ! $(docker info > /dev/null 2>&1); then
   echo -e "Opening Docker for Mac (D4M).\n"
   open -a /Applications/Docker.app
 fi
@@ -44,9 +42,10 @@ else
   done
 
   echo -ne "\nWait until D4M is running."
-  while ! $(ps auxwww|grep docker|grep vmstateevent |grep '"vmstate":"running"' > /dev/null 2>&1); do
+  # while ! $(ps auxwww|grep docker|grep vmstateevent |grep '"vmstate":"running"' > /dev/null 2>&1); do
+  while ! $(docker run --rm hello-world > /dev/null 2>&1); do
     echo -n "."
-    sleep 1
+    sleep 0.5
   done
 
   # check that screen has not already been setup
@@ -76,7 +75,7 @@ else
     screen -S d4m -p 0 -X stuff "apk add nfs-utils && mkdir -p /mnt && rpcbind -s && sleep .5 && mount -o nolock,local_lock=all \$(ip route|awk '/default/{print \$3}'):/Users/$USER /mnt
 "
 
-    echo "Pausing for NFS mount to be ready so this can be used in another script"
+    echo "Pausing for NFS mount to be ready so this can be used in another script."
     sleep 1
   fi
 
@@ -86,6 +85,8 @@ else
 • The /Users mount under D4M still exists and will continute to be slow, the d4m-nfs mount is under /mnt.
 • When mounting Docker volumes, you need to change paths like /Users/$USER mounts with /mnt.
 • To connect to the D4M moby linux VM use: screen -r d4m
-• To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d
+• To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d.
+• To run d4m-nfs faster and/or offline, leave ~/d4m-apk-cache and hello-world image.
+• If you switch between D4M stable and beta, you might need to remove ~/d4m-apk-cache and hello-world image.
 "
 fi
