@@ -19,9 +19,6 @@ Please make sure that /tmp is still shared:
 ![D4M Minimal File Sharing](/examples/img/d4m-min-file-sharing.png?raw=true "D4M Minimal File Sharing")
 
 Please note:
-* Only /Users/$USER directory is mounted, this might change if there is a request to be all user directories, or other locations.
-* The /Users mount under D4M still exists and will continute to be slow, the d4m-nfs mount is under /mnt.
-* When mounting Docker volumes, you need to change paths like /Users/$USER mounts with /mnt.
 * To connect to the D4M moby linux VM use: screen -r d4m
 * To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d.
 * To run d4m-nfs faster and/or offline, leave ~/d4m-apk-cache and hello-world image.
