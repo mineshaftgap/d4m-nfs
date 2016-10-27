@@ -1,0 +1,3 @@
+/Users:/Users
+/Volumes:/Volumes
+/private:/private
