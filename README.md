@@ -10,7 +10,12 @@ In order to make use of NFS, will want to run d4m-nfs.sh before bringing up your
 
 Alpine Linux NFS packages are now cached so that d4m-nfs can be used when not online. In order for this to work, you must of run it once before while online.
 
+You can now specify what mounts you want in the d4m-nfs-mounts.txt file. Note that if you do this, you need to make sure that it does not conflict with D4M settings, in other words if you want to have /Users be served by NFS instead of osxfs you will need to remove it from the D4M Preferences -> File Sharing. The /tmp share must stay since that is how d4m-nfs exchanges information with the D4M Moby VM. 
+
+This is the default file sharing:
 ![D4M Default File Sharing](/examples/img/d4m-default-file-sharing.png?raw=true "D4M Default File Sharing")
+
+Please make sure that /tmp is still shared:
 ![D4M Minimal File Sharing](/examples/img/d4m-min-file-sharing.png?raw=true "D4M Minimal File Sharing")
 
 Please note:
