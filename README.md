@@ -10,6 +10,9 @@ In order to make use of NFS, will want to run d4m-nfs.sh before bringing up your
 
 Alpine Linux NFS packages are now cached so that d4m-nfs can be used when not online. In order for this to work, you must of run it once before while online.
 
+![D4M Default File Sharing](/examples/img/d4m-default-file-sharing.png?raw=true "D4M Default File Sharing")
+![D4M Minimal File Sharing](/examples/img/d4m-min-file-sharing.png?raw=true "D4M Minimal File Sharing")
+
 Please note:
 * Only /Users/$USER directory is mounted, this might change if there is a request to be all user directories, or other locations.
 * The /Users mount under D4M still exists and will continute to be slow, the d4m-nfs mount is under /mnt.
