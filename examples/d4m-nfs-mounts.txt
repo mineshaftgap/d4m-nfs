@@ -1,0 +1,5 @@
+# Be sure that any mounts that have been added here
+# have been removed from Docker for Mac -> Preferences -> File Sharing
+#/Users:/Users
+#/Volumes:/Volumes
+#/private:/private

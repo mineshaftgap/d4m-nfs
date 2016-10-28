@@ -13,13 +13,6 @@ if ! $(docker info > /dev/null 2>&1); then
   open -a /Applications/Docker.app
 fi
 
-# check if export line needs to be added
-NFSEXP="\"/Users/$USER\" -alldirs -mapall=$(id -u):$(id -g) localhost"
-if ! $(grep "$NFSEXP" /etc/exports > /dev/null 2>&1); then
-  echo -e "Making the NFS /etc/exports entry if it doesn't already exist."
-  echo -e "\n$NFSEXP\n" | sudo tee -a /etc/exports
-fi
-
 # check if nfs conf line needs to be added
 NFSCNF="nfs.server.mount.require_resv_port = 0"
 if ! $(grep "$NFSCNF" /etc/nfs.conf > /dev/null 2>&1); then
@@ -27,11 +20,78 @@ if ! $(grep "$NFSCNF" /etc/nfs.conf > /dev/null 2>&1); then
   echo -e "\nnfs.server.mount.require_resv_port = 0\n" | sudo tee -a /etc/nfs.conf
 fi
 
+SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"&&pwd)"
+EXPORTS="# d4m-nfs exports\n"
+MYUID=$(id -u)
+MYGID=$(id -g)
+
+# iterate through the mounts in etc/d4m-nfs-mounts.txt to add exports
+if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
+  rm -f /tmp/d4m-nfs-mounts.txt
+
+  while read MOUNT; do
+    if ! [[ "$MOUNT" = "#"* ]]; then
+      NFSEXP="\"$(echo "$MOUNT" | cut -d: -f1)\" -alldirs -mapall=${MYUID}:${MYGID} localhost"
+
+      if ! $(grep "$NFSEXP" /etc/exports > /dev/null 2>&1); then
+        EXPORTS="$EXPORTS\n$NFSEXP"
+      fi
+    fi
+  done < "${SDIR}/etc/d4m-nfs-mounts.txt"
+
+  cp "${SDIR}/etc/d4m-nfs-mounts.txt" /tmp/
+fi
+
+# if /Users is not in etc/d4m-nfs-mounts.txt then add /Users/$USER
+if [[ ! "$EXPORTS" == *'"/Users"'* ]]; then
+  NFSEXP="\"/Users/$USER\" -alldirs -mapall=$(id -u):$(id -g) localhost"
+
+  if ! $(grep "$NFSEXP" /etc/exports > /dev/null 2>&1); then
+    EXPORTS="$EXPORTS\n$NFSEXP"
+  fi
+fi
+
+# only add if we have something to do
+if [ "$EXPORTS" != "# d4m-nfs exports\n" ]; then
+  echo -e "$EXPORTS\n" | sudo tee -a /etc/exports
+fi
+
+# copy anything from the apk-cache into 
+echo "Copy the Moby VM APK Cache back"
+rm -rf /tmp/d4m-apk-cache
+cp -r ${SDIR}/d4m-apk-cache/ /tmp/d4m-apk-cache
+
 # make sure /etc/exports is ok
 if ! $(nfsd checkexports); then
   echo "Something is wrong with your /etc/exports file, please check it." >&2
   exit 1
 else
+  echo "Create the script for Moby VM"
+  # make the script for the d4m side
+  # updat
+  echo "ln -s /tmp/d4m-apk-cache /etc/apk/cache
+apk update
+apk add nfs-utils
+rpcbind -s
+mkdir -p /mnt
+
+DEFGW=\$(ip route|awk '/default/{print \$3}')
+FSTAB=\"\\n\\n# d4m-nfs mounts\n\${DEFGW}:/Users/${USER} /mnt nfs nolock,local_lock=all 0 0\"
+
+if [ -e /tmp/d4m-nfs-mounts.txt ]; then
+  while read MOUNT; do
+    DSTDIR=\$(echo \"\$MOUNT\" | cut -d: -f2)
+    mkdir -p \${DSTDIR}
+    FSTAB=\"\${FSTAB}\\n\${DEFGW}:\$(echo \"\$MOUNT\" | cut -d: -f1) \${DSTDIR} nfs nolock,local_lock=all 0 0\"
+  done < /tmp/d4m-nfs-mounts.txt
+fi
+
+echo -e \$FSTAB >> /etc/fstab
+
+sleep .5
+mount -a
+" > /tmp/d4m-mount-nfs.sh
+
   echo -e "Start and restop nfsd, for some reason restart is not as kind."
   sudo nfsd stop && sudo nfsd start
 
@@ -61,32 +121,16 @@ else
       mkdir -p ~/d4m-apk-cache
     fi
 
-    echo -e "Make symlink to apk cache dir on Mac.\n"
-    screen -S d4m -p 0 -X stuff "ln -s /Users/$USER/d4m-apk-cache /etc/apk/cache
-"
-
-    if ! $(ls ~/d4m-apk-cache|grep APKINDEX > /dev/null 2>&1); then
-      echo -e "Get an apk update.\n"
-      screen -S d4m -p 0 -X stuff "apk update
-"
-    fi
-
-    echo -e "Install nfs-utils, make the /mnt dir, start rpcbind, wait, then mount Mac NFS.\n"
-    screen -S d4m -p 0 -X stuff "apk add nfs-utils && mkdir -p /mnt && rpcbind -s && sleep .5 && mount -o nolock,local_lock=all \$(ip route|awk '/default/{print \$3}'):/Users/$USER /mnt
+    echo -e "Run Moby VM script: apk cache symlink,.\n"
+    screen -S d4m -p 0 -X stuff "source /tmp/d4m-mount-nfs.sh
 "
 
     echo "Pausing for NFS mount to be ready so this can be used in another script."
     sleep 1
   fi
 
-  echo -e "\n\nPlease note:
-------------
-• Only /Users/$USER directory is mounted, this might change if there is a request to be all user directories, or other locations.
-• The /Users mount under D4M still exists and will continute to be slow, the d4m-nfs mount is under /mnt.
-• When mounting Docker volumes, you need to change paths like /Users/$USER mounts with /mnt.
-• To connect to the D4M moby linux VM use: screen -r d4m
-• To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d.
-• To run d4m-nfs faster and/or offline, leave ~/d4m-apk-cache and hello-world image.
-• If you switch between D4M stable and beta, you might need to remove ~/d4m-apk-cache and hello-world image.
-"
+  echo -e "\nCopy back the APK cache\n\n\n"
+  cp /tmp/d4m-apk-cache/* ${SDIR}/d4m-apk-cache/
+
+  cat README.md
 fi
