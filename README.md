@@ -6,7 +6,7 @@ d4m-nfs blantently steals from the way that DockerRoot/xhyve used NFS mounts to 
 
 The advantage of this over a file sync strategy is simpler, less overhead and not having to duplicate files.
 
-In order to make use of NFS, will want to run d4m-nfs.sh before bringing up your containers. You will need to change your volume paths, look at the example directory for docker or docker-compose simple examples.
+In order to make use of NFS, you will want to run d4m-nfs.sh before bringing up your containers. You will either need to change your volume paths to use /mnt, or configure the mounts in etc/d4m-nfs-mounts.txt. Look at the example directory for docker or docker-compose simple examples and an example d4m-nfs-mounts.txt.
 
 Alpine Linux NFS packages are now cached so that d4m-nfs can be used when not online. In order for this to work, you must of run it once before while online.
 
@@ -21,5 +21,5 @@ Please make sure that /tmp is still shared:
 Please note:
 * To connect to the D4M moby linux VM use: screen -r d4m
 * To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d.
-* To run d4m-nfs faster and/or offline, leave ~/d4m-apk-cache and hello-world image.
-* If you switch between D4M stable and beta, you might need to remove ~/d4m-apk-cache and hello-world image.
+* To run d4m-nfs faster and/or offline, leave the files in d4m-apk-cache and the hello-world image.
+* If you switch between D4M stable and beta, you might need to remove files in d4m-apk-cache and the hello-world image.
