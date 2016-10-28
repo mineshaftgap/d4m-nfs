@@ -27,8 +27,6 @@ MYGID=$(id -g)
 
 # iterate through the mounts in etc/d4m-nfs-mounts.txt to add exports
 if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
-  rm -f /tmp/d4m-nfs-mounts.txt
-
   while read MOUNT; do
     if ! [[ "$MOUNT" = "#"* ]]; then
       NFSEXP="\"$(echo "$MOUNT" | cut -d: -f1)\" -alldirs -mapall=${MYUID}:${MYGID} localhost"
@@ -39,15 +37,18 @@ if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
     fi
   done < "${SDIR}/etc/d4m-nfs-mounts.txt"
 
-  cp "${SDIR}/etc/d4m-nfs-mounts.txt" /tmp/
+  egrep -v '^#' etc/d4m-nfs-mounts.txt > /tmp/d4m-nfs-mounts.txt
 fi
 
 # if /Users is not in etc/d4m-nfs-mounts.txt then add /Users/$USER
 if [[ ! "$EXPORTS" == *'"/Users"'* ]]; then
-  NFSEXP="\"/Users/$USER\" -alldirs -mapall=$(id -u):$(id -g) localhost"
+  # make sure /Users is not in /etc/exports
+  if ! $(egrep '^"/Users"' /etc/exports > /dev/null 2>&1); then
+    NFSEXP="\"/Users/$USER\" -alldirs -mapall=$(id -u):$(id -g) localhost"
 
-  if ! $(grep "$NFSEXP" /etc/exports > /dev/null 2>&1); then
-    EXPORTS="$EXPORTS\n$NFSEXP"
+    if ! $(grep "$NFSEXP" /etc/exports > /dev/null 2>&1); then
+      EXPORTS="$EXPORTS\n$NFSEXP"
+    fi
   fi
 fi
 
