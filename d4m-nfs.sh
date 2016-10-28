@@ -37,7 +37,7 @@ if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
     fi
   done < "${SDIR}/etc/d4m-nfs-mounts.txt"
 
-  egrep -v '^#' etc/d4m-nfs-mounts.txt > /tmp/d4m-nfs-mounts.txt
+  egrep -v '^#' "${SDIR}/etc/d4m-nfs-mounts.txt" > /tmp/d4m-nfs-mounts.txt
 fi
 
 # if /Users is not in etc/d4m-nfs-mounts.txt then add /Users/$USER
@@ -133,5 +133,5 @@ mount -a
   echo -e "\nCopy back the APK cache\n\n\n"
   cp /tmp/d4m-apk-cache/* ${SDIR}/d4m-apk-cache/
 
-  cat README.md
+  cat ${SDIR}/README.md
 fi
