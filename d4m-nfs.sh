@@ -49,12 +49,12 @@ if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
 fi
 
 # if /Users is not in etc/d4m-nfs-mounts.txt then add /Users/$USER
-if [[ ! "$EXPORTS" == *'"/Users"'* ]]; then
+if [[ ! "$EXPORTS" == *'"/Users"'* && ! "$EXPORTS" == *"\"/Users/$USER"* ]]; then
   # make sure /Users is not in /etc/exports
   if ! $(egrep '^"/Users"' /etc/exports > /dev/null 2>&1); then
     NFSEXP="\"/Users/$USER\" -alldirs -mapall=$(id -u):$(id -g) localhost"
 
-    if ! $(grep "$NFSEXP" /etc/exports > /dev/null 2>&1); then
+    if ! $(grep "/Users/$USER" /etc/exports > /dev/null 2>&1); then
       EXPORTS="$EXPORTS\n$NFSEXP"
     fi
   fi
@@ -85,7 +85,11 @@ rpcbind -s
 mkdir -p /mnt
 
 DEFGW=\$(ip route|awk '/default/{print \$3}')
-FSTAB=\"\\n\\n# d4m-nfs mounts\n\${DEFGW}:/Users/${USER} /mnt nfs nolock,local_lock=all 0 0\"
+FSTAB=\"\\n\\n# d4m-nfs mounts\n\"
+
+if ! \$(grep ':/mnt' /tmp/d4m-nfs-mounts.txt > /dev/null 2>&1); then
+  FSTAB=\"\${FSTAB}\${DEFGW}:/Users/${USER} /mnt nfs nolock,local_lock=all 0 0\"
+fi
 
 if [ -e /tmp/d4m-nfs-mounts.txt ]; then
   while read MOUNT; do
