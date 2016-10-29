@@ -22,14 +22,22 @@ fi
 
 SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"&&pwd)"
 EXPORTS="# d4m-nfs exports\n"
-MYUID=$(id -u)
-MYGID=$(id -g)
+NFSUID=$(id -u)
+NFSGID=$(id -g)
 
 # iterate through the mounts in etc/d4m-nfs-mounts.txt to add exports
 if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
   while read MOUNT; do
     if ! [[ "$MOUNT" = "#"* ]]; then
-      NFSEXP="\"$(echo "$MOUNT" | cut -d: -f1)\" -alldirs -mapall=${MYUID}:${MYGID} localhost"
+      if [[ "$(echo "$MOUNT" | cut -d: -f3)" != "" ]]; then
+        NFSUID=$(echo "$MOUNT" | cut -d: -f3)
+      fi
+
+      if [[ "$(echo "$MOUNT" | cut -d: -f4)" != "" ]]; then
+        NFSGID=$(echo "$MOUNT" | cut -d: -f4)
+      fi
+
+      NFSEXP="\"$(echo "$MOUNT" | cut -d: -f1)\" -alldirs -mapall=${NFSUID}:${NFSGID} localhost"
 
       if ! $(grep "$NFSEXP" /etc/exports > /dev/null 2>&1); then
         EXPORTS="$EXPORTS\n$NFSEXP"
