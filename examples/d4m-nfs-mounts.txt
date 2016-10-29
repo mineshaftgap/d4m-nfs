@@ -1,5 +1,13 @@
 # Be sure that any mounts that have been added here
 # have been removed from Docker for Mac -> Preferences -> File Sharing
-#/Users:/Users
+# 
+# You must supply the Mac source directory and Moby VM destination directory,
+# and optionally add on user/group mapping:
+#
+# https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man5/exports.5.html
+#
+# <MAC_SRD_DIR>:<MOBY_VM_DST_DIR>[:MAC_UID_MAP][:MAC_GID_MAP]
+#
+#/Users/foobar:/mnt:0:0
 #/Volumes:/Volumes
 #/private:/private
