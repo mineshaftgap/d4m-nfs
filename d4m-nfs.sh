@@ -80,14 +80,14 @@ else
   # updat
   echo "ln -s /tmp/d4m-apk-cache /etc/apk/cache
 apk update
-apk add nfs-utils
+apk add nfs-utils sntpc
 rpcbind -s
-mkdir -p /mnt
 
 DEFGW=\$(ip route|awk '/default/{print \$3}')
 FSTAB=\"\\n\\n# d4m-nfs mounts\n\"
 
 if ! \$(grep ':/mnt' /tmp/d4m-nfs-mounts.txt > /dev/null 2>&1); then
+  mkdir -p /mnt
   FSTAB=\"\${FSTAB}\${DEFGW}:/Users/${USER} /mnt nfs nolock,local_lock=all 0 0\"
 fi
 
@@ -100,6 +100,8 @@ if [ -e /tmp/d4m-nfs-mounts.txt ]; then
 fi
 
 echo -e \$FSTAB >> /etc/fstab
+
+sntpc -i 10 \${DEFGW} &
 
 sleep .5
 mount -a
