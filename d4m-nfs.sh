@@ -65,7 +65,7 @@ if [ "$EXPORTS" != "# d4m-nfs exports\n" ]; then
   echo -e "$EXPORTS\n" | sudo tee -a /etc/exports
 fi
 
-# copy anything from the apk-cache into 
+# copy anything from the apk-cache into
 echo "Copy the Moby VM APK Cache back"
 rm -rf /tmp/d4m-apk-cache
 cp -r ${SDIR}/d4m-apk-cache/ /tmp/d4m-apk-cache
@@ -76,9 +76,8 @@ if ! $(nfsd checkexports); then
   exit 1
 else
   echo "Create the script for Moby VM"
-  # make the script for the d4m side
-  # updat
-  echo "ln -s /tmp/d4m-apk-cache /etc/apk/cache
+  # make the script for the d4m side update
+  echo "ln -ns /tmp/d4m-apk-cache /etc/apk/cache
 apk update
 apk add nfs-utils sntpc
 rpcbind -s
@@ -137,15 +136,15 @@ mount -a
     fi
 
     echo -e "Run Moby VM script: apk cache symlink,.\n"
-    screen -S d4m -p 0 -X stuff "source /tmp/d4m-mount-nfs.sh
-"
+    screen -S d4m -p 0 -X stuff "source /tmp/d4m-mount-nfs.sh"
 
     echo "Pausing for NFS mount to be ready so this can be used in another script."
     sleep 1
+
+    echo -e "\nCopy back the APK cache\n"
+    cp /tmp/d4m-apk-cache/* ${SDIR}/d4m-apk-cache/
   fi
 
-  echo -e "\nCopy back the APK cache\n\n\n"
-  cp /tmp/d4m-apk-cache/* ${SDIR}/d4m-apk-cache/
-
+  echo -e "\n\n"
   cat ${SDIR}/README.md
 fi
