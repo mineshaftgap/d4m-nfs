@@ -3,20 +3,20 @@
 # see if sudo is needed
 if ! $(sudo -n cat /dev/null > /dev/null 2>&1); then
   # get sudo first so the focus for the password is kept in the term, instead of Docker.app
-  echo -e "You will need to provide your Mac password in order to setup NFS."
+  echo -e "[d4m-nfs] You will need to provide your Mac password in order to setup NFS."
   sudo cat /dev/null
 fi
 
 # check to see if Docker is already running
 if ! $(docker info > /dev/null 2>&1); then
-  echo -e "Opening Docker for Mac (D4M).\n"
+  echo "[d4m-nfs] Opening Docker for Mac (D4M)."
   open -a /Applications/Docker.app
 fi
 
 # check if nfs conf line needs to be added
 NFSCNF="nfs.server.mount.require_resv_port = 0"
 if ! $(grep "$NFSCNF" /etc/nfs.conf > /dev/null 2>&1); then
-  echo -e "Set the NFS nfs.server.mount.require_resv_port value."
+  echo "[d4m-nfs] Set the NFS nfs.server.mount.require_resv_port value."
   echo -e "\nnfs.server.mount.require_resv_port = 0\n" | sudo tee -a /etc/nfs.conf
 fi
 
@@ -65,20 +65,19 @@ if [ "$EXPORTS" != "# d4m-nfs exports\n" ]; then
   echo -e "$EXPORTS\n" | sudo tee -a /etc/exports
 fi
 
-# copy anything from the apk-cache into 
-echo "Copy the Moby VM APK Cache back"
+# copy anything from the apk-cache into
+echo "[d4m-nfs] Copy the Moby VM APK Cache back."
 rm -rf /tmp/d4m-apk-cache
-cp -r ${SDIR}/d4m-apk-cache/ /tmp/d4m-apk-cache
+cp -fr ${SDIR}/d4m-apk-cache/ /tmp/d4m-apk-cache
 
 # make sure /etc/exports is ok
 if ! $(nfsd checkexports); then
-  echo "Something is wrong with your /etc/exports file, please check it." >&2
+  echo "[d4m-nfs] Something is wrong with your /etc/exports file, please check it." >&2
   exit 1
 else
-  echo "Create the script for Moby VM"
+  echo "[d4m-nfs] Create the script for Moby VM."
   # make the script for the d4m side
-  # updat
-  echo "ln -s /tmp/d4m-apk-cache /etc/apk/cache
+  echo "ln -ns /tmp/d4m-apk-cache /etc/apk/cache
 apk update
 apk add nfs-utils sntpc
 rpcbind -s
@@ -105,47 +104,52 @@ sntpc -i 10 \${DEFGW} &
 
 sleep .5
 mount -a
+touch /tmp/d4m-done
 " > /tmp/d4m-mount-nfs.sh
 
-  echo -e "Start and restop nfsd, for some reason restart is not as kind."
+  echo -e "[d4m-nfs] Start and restop nfsd, for some reason restart is not as kind."
   sudo nfsd stop && sudo nfsd start
 
-  echo -n "Wait until NFS is setup."
+  echo -n "[d4m-nfs] Wait until NFS is setup."
   while ! rpcinfo -u localhost nfs > /dev/null 2>&1; do
     echo -n "."
-    sleep 0.5
+    sleep .25
   done
 
-  echo -ne "\nWait until D4M is running."
+  echo -ne "\n[d4m-nfs] Wait until D4M is running."
   # while ! $(ps auxwww|grep docker|grep vmstateevent |grep '"vmstate":"running"' > /dev/null 2>&1); do
   while ! $(docker run --rm hello-world > /dev/null 2>&1); do
     echo -n "."
-    sleep 0.5
+    sleep .25
   done
+  echo ""
 
   # check that screen has not already been setup
   if ! $(screen -ls |grep d4m > /dev/null 2>&1); then
-    echo -e "\nSetup 'screen' to work properly with the D4M tty, while at it name it 'd4m'.\n"
+    echo "[d4m-nfs] Setup 'screen' to work properly with the D4M tty, while at it name it 'd4m'."
     screen -AmdS d4m ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty
 
-    echo -e "Log into D4M as root so next commands can run.\n"
+    echo "[d4m-nfs] Log into D4M as root so next commands can run."
     screen -S d4m -p 0 -X stuff $(printf "root\\r\\n")
 
-    if [ ! -e ~/d4m-apk-cache/ ]; then
-      echo -e "Make sure persistent apk cache dir on Mac so NFS setup can happen offline"
-      mkdir -p ~/d4m-apk-cache
-    fi
-
-    echo -e "Run Moby VM script: apk cache symlink,.\n"
-    screen -S d4m -p 0 -X stuff "source /tmp/d4m-mount-nfs.sh
+    echo "[d4m-nfs] Run Moby VM d4m-nfs setup script."
+    screen -S d4m -p 0 -X stuff "sh /tmp/d4m-mount-nfs.sh
 "
 
-    echo "Pausing for NFS mount to be ready so this can be used in another script."
-    sleep 1
+    echo -n "[d4m-nfs] Wating until d4m-nfs setup is done."
+    while [ ! -e /tmp/d4m-done ]; do
+      echo -n "."
+      sleep .25
+    done
+    echo ""
+
+    rm /tmp/d4m-done
   fi
 
-  echo -e "\nCopy back the APK cache\n\n\n"
-  cp /tmp/d4m-apk-cache/* ${SDIR}/d4m-apk-cache/
+  echo -e "[d4m-nfs] Copy back the APK cache.\n"
+  cp -f /tmp/d4m-apk-cache/* ${SDIR}/d4m-apk-cache/
+
+  echo ""
 
   cat ${SDIR}/README.md
 fi
