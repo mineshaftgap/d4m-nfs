@@ -8,6 +8,8 @@ The advantage of this over a file sync strategy is simpler, less overhead and no
 
 In order to make use of NFS, you will want to run d4m-nfs.sh before bringing up your containers. You will either need to change your volume paths to use /mnt, or configure the mounts in etc/d4m-nfs-mounts.txt. Look at the example directory for docker or docker-compose simple examples and an example d4m-nfs-mounts.txt.
 
+By default, if the script doesn't find any other volumes bound to /mnt in your etc/d4m-nfs-mounts.txt, it will mount your home directory (eg. /Users/username) on /mnt to be exposed for the container. If you'd like to disable this, you may set the environment variable AUTO_MOUNT_HOME to false.
+
 Alpine Linux NFS packages are now cached so that d4m-nfs can be used when not online. In order for this to work, you must of run it once before while online.
 
 You can now specify what mounts you want in the d4m-nfs-mounts.txt file. Note that if you do this, you need to make sure that it does not conflict with D4M settings, in other words if you want to have /Users be served by NFS instead of osxfs you will need to remove it from the D4M Preferences -> File Sharing. The /tmp share must stay since that is how d4m-nfs exchanges information with the D4M Moby VM. 

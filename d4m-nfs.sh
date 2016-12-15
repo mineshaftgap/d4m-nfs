@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# env var to specify whether we want our home bound to /mnt
+AUTO_MOUNT_HOME=${AUTO_MOUNT_HOME:-true}
+
 # see if sudo is needed
 if ! $(sudo -n cat /dev/null > /dev/null 2>&1); then
   # get sudo first so the focus for the password is kept in the term, instead of Docker.app
@@ -77,16 +80,17 @@ if ! $(nfsd checkexports); then
 else
   echo "[d4m-nfs] Create the script for Moby VM."
   # make the script for the d4m side
-  echo "ln -ns /tmp/d4m-apk-cache /etc/apk/cache
+  echo "ln -nsf /tmp/d4m-apk-cache /etc/apk/cache
 apk update
 apk add nfs-utils sntpc
-rpcbind -s
+rpcbind -s > /dev/null 2>&1
 
 DEFGW=\$(ip route|awk '/default/{print \$3}')
 FSTAB=\"\\n\\n# d4m-nfs mounts\n\"
 
-if ! \$(grep ':/mnt' /tmp/d4m-nfs-mounts.txt > /dev/null 2>&1); then
+if $AUTO_MOUNT_HOME && ! \$(grep ':/mnt' /tmp/d4m-nfs-mounts.txt > /dev/null 2>&1); then
   mkdir -p /mnt
+
   FSTAB=\"\${FSTAB}\${DEFGW}:/Users/${USER} /mnt nfs nolock,local_lock=all 0 0\"
 fi
 
@@ -98,7 +102,12 @@ if [ -e /tmp/d4m-nfs-mounts.txt ]; then
   done < /tmp/d4m-nfs-mounts.txt
 fi
 
-echo -e \$FSTAB >> /etc/fstab
+if ! \$(grep \"d4m-nfs mounts\" /etc/fstab > /dev/null 2>&1); then
+    echo "adding d4m nfs config to /etc/fstab:"
+    echo -e \$FSTAB | tee /etc/fstab
+else
+    echo "d4m nfs mounts already exist in /etc/fstab"
+fi
 
 sntpc -i 10 \${DEFGW} &
 
@@ -129,14 +138,11 @@ touch /tmp/d4m-done
     echo "[d4m-nfs] Setup 'screen' to work properly with the D4M tty, while at it name it 'd4m'."
     screen -AmdS d4m ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty
 
-    echo "[d4m-nfs] Log into D4M as root so next commands can run."
-    screen -S d4m -p 0 -X stuff $(printf "root\\r\\n")
-
     echo "[d4m-nfs] Run Moby VM d4m-nfs setup script."
     screen -S d4m -p 0 -X stuff "sh /tmp/d4m-mount-nfs.sh
 "
 
-    echo -n "[d4m-nfs] Wating until d4m-nfs setup is done."
+    echo -n "[d4m-nfs] Waiting until d4m-nfs setup is done."
     while [ ! -e /tmp/d4m-done ]; do
       echo -n "."
       sleep .25
