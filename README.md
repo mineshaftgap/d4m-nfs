@@ -25,3 +25,7 @@ Please note:
 * To disconnect from the D4M moby linux VM tty screen session use Ctrl-a d.
 * To run d4m-nfs faster and/or offline, leave the files in d4m-apk-cache and the hello-world image.
 * If you switch between D4M stable and beta, you might need to remove files in d4m-apk-cache and the hello-world image.
+
+
+# Use Stable docker for mac channel
+D4M is known to work on 'Docker version 1.12.3' and does not work on docker for mac beta (1.13).  Please use the stable channel of docker for mac https://docs.docker.com/docker-for-mac/
