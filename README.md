@@ -27,8 +27,8 @@ Please note:
 * If you switch between D4M stable and beta, you might need to remove files in d4m-apk-cache and the hello-world image.
 
 
-# Use Stable docker for mac channel
-D4M is known to work on 'Docker version 1.12.3' and does not work on docker for mac beta (1.13).  Please use the stable channel of docker for mac https://docs.docker.com/docker-for-mac/
+# Use Stable Docker for Mac channel
+Currently d4m-nfs is known to work on 'Docker version 1.12.3' and does not work on Docker for Mac beta (1.13).  Please use the stable channel of Docker for Mac https://docs.docker.com/docker-for-mac/
 
 # ionotify for Sublime users
-If you use sublime, please checkout the plugin by Yves to help with auto reloads on file changes - https://github.com/yvess/sublime_d4m
+If you use Sublime, please checkout the plugin by Yves to help with auto reloads on file changes - https://github.com/yvess/sublime_d4m
