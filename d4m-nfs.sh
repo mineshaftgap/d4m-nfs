@@ -1,5 +1,18 @@
 #!/bin/bash
 
+README=true
+
+while getopts ":q" opt; do
+  case $opt in
+    q)
+      README=false
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+  esac
+done
+
 # env var to specify whether we want our home bound to /mnt
 AUTO_MOUNT_HOME=${AUTO_MOUNT_HOME:-true}
 
@@ -157,5 +170,7 @@ touch /tmp/d4m-done
 
   echo ""
 
-  cat ${SDIR}/README.md
+  if [ $README = true ]; then
+    cat ${SDIR}/README.md
+  fi
 fi
