@@ -26,9 +26,19 @@ Please note:
 * To run d4m-nfs faster and/or offline, leave the files in d4m-apk-cache and the hello-world image.
 * If you switch between D4M stable and beta, you might need to remove files in d4m-apk-cache and the hello-world image.
 
+# Opening Github Isses
+Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:
+
+1. screenshot of Docker for Mac's Preferences -> File Sharing
+2. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
+3. attachment of /tmp/d4m-mount-nfs.sh
+4. attachment of /tmp/d4m-nfs-mounts.txt
+5. attachment of /etc/exports
 
 # Use Stable Docker for Mac channel
 Currently d4m-nfs is known to work on 'Docker version 1.12.3' and does not work on Docker for Mac beta (1.13).  Please use the stable channel of Docker for Mac https://docs.docker.com/docker-for-mac/
 
 # ionotify for Sublime users
 If you use Sublime, please checkout the plugin by Yves to help with auto reloads on file changes - https://github.com/yvess/sublime_d4m
+
+
