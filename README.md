@@ -36,7 +36,7 @@ Please keep in mind that everyone's environment is quite unique and this make he
 5. attachment of /etc/exports
 
 # Use Stable Docker for Mac channel
-Currently d4m-nfs is known to work on 'Docker version 1.12.3' and does not work on Docker for Mac beta (1.13).  Please use the stable channel of Docker for Mac https://docs.docker.com/docker-for-mac/
+Currently d4m-nfs is known to work on the stable channel of 'Docker for Mac' both versions 1.12 and 1.13, we cannot guarantee how it will work on the beta channel of 'Docker for Mac'.  Please use the stable channel of Docker for Mac https://docs.docker.com/docker-for-mac/
 
 # ionotify for Sublime users
 If you use Sublime, please checkout the plugin by Yves to help with auto reloads on file changes - https://github.com/yvess/sublime_d4m
