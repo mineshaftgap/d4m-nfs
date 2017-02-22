@@ -38,7 +38,23 @@ Please keep in mind that everyone's environment is quite unique and this make he
 # Use Stable Docker for Mac channel
 Currently d4m-nfs is known to work on the stable channel of 'Docker for Mac' both versions 1.12 and 1.13, we cannot guarantee how it will work on the beta channel of 'Docker for Mac'.  Please use the stable channel of Docker for Mac https://docs.docker.com/docker-for-mac/
 
-# ionotify for Sublime users
+# Integration with text editors
+
+## Sublime Text
+
 If you use Sublime, please checkout the plugin by Yves to help with auto reloads on file changes - https://github.com/yvess/sublime_d4m
 
+## Atom
+
+The easiest way to enable auto reloading is to install [on-save](https://atom.io/packages/on-save) package and set it up with this config:
+
+```json
+[
+  {
+    "srcDir": ".",
+    "files": "**/**",
+    "command": "screen -S d4m -p 0 -X stuff \"touch `pwd`/${srcFile}\"\r"
+  }
+]
+```
 
