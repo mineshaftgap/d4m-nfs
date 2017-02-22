@@ -8,10 +8,17 @@ while getopts ":q" opt; do
       README=false
       ;;
     \?)
-      echo "Invalid option: -$OPTARG" >&2
+      echo "[d4m-nfs] Invalid option: -$OPTARG" >&2
       ;;
   esac
 done
+
+# check if this script is running under tmux, and if so, exit
+# (under tmux, we are unable to attach to the d4m tty via screen)
+if { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } then
+  echo "[d4m-nfs] This script cannot be run under tmux. Exiting."
+  exit 1
+fi
 
 # env var to specify whether we want our home bound to /mnt
 AUTO_MOUNT_HOME=${AUTO_MOUNT_HOME:-true}
