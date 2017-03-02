@@ -14,8 +14,9 @@ while getopts ":q" opt; do
 done
 
 # check if this script is running under tmux, and if so, exit
+# tmux sets $TERM=screen or user sets $TERM=screen-256color
 # (under tmux, we are unable to attach to the d4m tty via screen)
-if { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } then
+if { [[ "$TERM" =~ screen* ]] && [ -n "$TMUX" ]; } then
   echo "[d4m-nfs] This script cannot be run under tmux. Exiting."
   exit 1
 fi
