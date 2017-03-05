@@ -26,7 +26,7 @@ Please note:
 * To run d4m-nfs faster and/or offline, leave the files in d4m-apk-cache and the hello-world image.
 * If you switch between D4M stable and beta, you might need to remove files in d4m-apk-cache and the hello-world image.
 
-# Opening Github Isses
+# Opening Github Issues
 Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:
 
 1. screenshot of Docker for Mac's Preferences -> File Sharing
