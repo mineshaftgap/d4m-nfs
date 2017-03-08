@@ -29,12 +29,12 @@ Please note:
 # Opening Github Issues
 Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:
 
-0. Please ensure you have looked at the "examples" directory in the root of this site.
-1. screenshot of Docker for Mac's Preferences -> File Sharing
-2. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
-3. attachment of /tmp/d4m-mount-nfs.sh
-4. attachment of /tmp/d4m-nfs-mounts.txt
-5. attachment of /etc/exports
+1. Please ensure you have looked at the "examples" directory in the root of this site.
+2. screenshot of Docker for Mac's Preferences -> File Sharing
+3. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
+4. attachment of /tmp/d4m-mount-nfs.sh
+5. attachment of /tmp/d4m-nfs-mounts.txt
+6. attachment of /etc/exports
 
 # Use Stable Docker for Mac channel
 Currently d4m-nfs is known to work on the stable channel of 'Docker for Mac' both versions 1.12 and 1.13, we cannot guarantee how it will work on the beta channel of 'Docker for Mac'.  Please use the stable channel of Docker for Mac https://docs.docker.com/docker-for-mac/
