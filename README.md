@@ -29,6 +29,7 @@ Please note:
 # Opening Github Issues
 Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:
 
+0. Please ensure you have looked at the "examples" directory in the root of this site.
 1. screenshot of Docker for Mac's Preferences -> File Sharing
 2. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
 3. attachment of /tmp/d4m-mount-nfs.sh
