@@ -6,7 +6,7 @@ d4m-nfs blantently steals from the way that DockerRoot/xhyve used NFS mounts to 
 
 The advantage of this over a file sync strategy is simpler, less overhead and not having to duplicate files.
 
-In order to make use of NFS, you will want to run ./d4m-nfs.sh before bringing up your containers, please note this must be run via the bash shell and not the sh shell. You will either need to change your volume paths to use /mnt, or configure the mounts in etc/d4m-nfs-mounts.txt. Look at the example directory for docker or docker-compose simple examples and an example d4m-nfs-mounts.txt.
+In order to make use of NFS, you will want to run ./d4m-nfs.sh before bringing up your containers, **please note this must be run via the bash shell and not the sh shell**. You will either need to change your volume paths to use /mnt, or configure the mounts in etc/d4m-nfs-mounts.txt. Look at the example directory for docker or docker-compose simple examples and an example d4m-nfs-mounts.txt.
 
 By default, if the script doesn't find any other volumes bound to /mnt in your etc/d4m-nfs-mounts.txt, it will mount your home directory (eg. /Users/username) on /mnt to be exposed for the container. If you'd like to disable this, you may set the environment variable AUTO_MOUNT_HOME to false.
 
@@ -27,7 +27,7 @@ Please note:
 * If you switch between D4M stable and beta, you might need to remove files in d4m-apk-cache and the hello-world image.
 
 # Opening Github Issues
-Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:
+**Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:**
 
 1. Please ensure you have looked at the "examples" directory in the root of this site.
 2. screenshot of Docker for Mac's Preferences -> File Sharing
