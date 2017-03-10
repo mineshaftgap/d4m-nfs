@@ -21,7 +21,7 @@ if { [[ "$TERM" =~ screen* ]] && [ -n "$TMUX" ]; } then
   exit 1
 fi
 
-# env var to specify whether we want our home bound to /mnt
+# env var to specify whether we want our home bound to /host-home
 AUTO_MOUNT_HOME=${AUTO_MOUNT_HOME:-true}
 
 # see if sudo is needed
@@ -109,10 +109,10 @@ rpcbind -s > /dev/null 2>&1
 DEFGW=\$(ip route|awk '/default/{print \$3}')
 FSTAB=\"\\n\\n# d4m-nfs mounts\n\"
 
-if $AUTO_MOUNT_HOME && ! \$(grep ':/mnt' /tmp/d4m-nfs-mounts.txt > /dev/null 2>&1); then
-  mkdir -p /mnt
+if $AUTO_MOUNT_HOME && ! \$(grep ':/host-home' /tmp/d4m-nfs-mounts.txt > /dev/null 2>&1); then
+  mkdir -p /host-home
 
-  FSTAB=\"\${FSTAB}\${DEFGW}:/Users/${USER} /mnt nfs nolock,local_lock=all 0 0\"
+  FSTAB=\"\${FSTAB}\${DEFGW}:/Users/${USER} /host-home nfs nolock,local_lock=all 0 0\"
 fi
 
 if [ -e /tmp/d4m-nfs-mounts.txt ]; then
