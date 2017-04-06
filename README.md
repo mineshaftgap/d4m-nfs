@@ -36,6 +36,16 @@ Please note:
 5. attachment of /tmp/d4m-nfs-mounts.txt
 6. attachment of /etc/exports
 
+## Common Problem
+It appears as though a number of people are blindly copying the mounts from the preference in Docker for Mac to d4m-nfs/etc/d4m-nfs-mounts.txt. In doing this they end up having a /Volumes, /private and /Users mounts. If you are getting an error similar to the following, you might of done this:
+
+```
+ERROR: for applications  Cannot start service applications: Mounts denied: r more info.
+```
+
+In all likelihood this is not what you want. The location /Volumes on a Mac is actually just a symlink to /, and it is never good to export a symlink. On top of that, with NFS, you can not export child directories which are on the same file system, and since both /Users and /private this could cause problems. You probably will need have to clean up your /etc/exports to remove all the lines from # d4m-nfs exports down.
+
+
 # Use Stable Docker for Mac channel
 Currently d4m-nfs is known to work on the stable channel of 'Docker for Mac' both versions 1.12 and 1.13, we cannot guarantee how it will work on the beta channel of 'Docker for Mac'.  Please use the stable channel of Docker for Mac https://docs.docker.com/docker-for-mac/
 
