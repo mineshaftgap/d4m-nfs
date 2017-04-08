@@ -138,7 +138,7 @@ touch /tmp/d4m-done
 " > /tmp/d4m-mount-nfs.sh
 
   echo -e "[d4m-nfs] Start and restop nfsd, for some reason restart is not as kind."
-  sudo killall -9 nfsd && sudo nfsd start
+  sudo killall -9 nfsd ; sudo nfsd start
 
   echo -n "[d4m-nfs] Wait until NFS is setup."
   while ! rpcinfo -u localhost nfs > /dev/null 2>&1; do
