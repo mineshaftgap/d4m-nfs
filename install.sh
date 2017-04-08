@@ -113,7 +113,7 @@ touch ${LIBDIR}/d4m-done
   chmod +x ${LIBDIR}/d4m-mount-nfs.sh
 
   echo -e "[d4m-nfs] Start and restop nfsd, for some reason restart is not as kind."
-  sudo nfsd stop && sudo nfsd start
+  sudo killall -9 nfsd && sudo nfsd start
 
   echo -n "[d4m-nfs] Wait until NFS is setup."
   while ! rpcinfo -u localhost nfs > /dev/null 2>&1; do
