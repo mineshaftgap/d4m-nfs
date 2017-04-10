@@ -8,6 +8,4 @@
 #
 # <MAC_SRD_DIR>:<MOBY_VM_DST_DIR>[:MAC_UID_MAP][:MAC_GID_MAP]
 #
-#/Users/foobar:/mnt:0:0
-#/Volumes:/Volumes
-#/private:/private
+#/Users/MYUSERNAME:/mnt:0:0
