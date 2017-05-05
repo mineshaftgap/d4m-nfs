@@ -64,7 +64,7 @@ The easiest way to enable auto reloading is to install [on-save](https://atom.io
   {
     "srcDir": ".",
     "files": "**/**",
-    "command": "screen -S d4m -p 0 -X stuff \"touch `pwd`/${srcFile}\"\r"
+    "command": "screen -S d4m -p 0 -X stuff \"touch \\\"`pwd`/${srcFile}\\\"\"\r"
   }
 ]
 ```
