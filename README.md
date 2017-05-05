@@ -30,11 +30,12 @@ Please note:
 **Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:**
 
 1. Please ensure you have looked at the "examples" directory in the root of this site.
-2. screenshot of Docker for Mac's Preferences -> File Sharing
-3. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
-4. attachment of /tmp/d4m-mount-nfs.sh
-5. attachment of /tmp/d4m-nfs-mounts.txt
-6. attachment of /etc/exports
+2. include the text of the any approriate error message
+3. screenshot of Docker for Mac's Preferences -> File Sharing
+4. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
+5. attachment of /tmp/d4m-mount-nfs.sh
+6. attachment of /tmp/d4m-nfs-mounts.txt
+7. attachment of /etc/exports
 
 ## Common Problem
 It appears as though a number of people are blindly copying the mounts from the preference in Docker for Mac to d4m-nfs/etc/d4m-nfs-mounts.txt. In doing this they end up having a /Volumes, /private and /Users mounts. If you are getting an error similar to the following, you might of done this:
