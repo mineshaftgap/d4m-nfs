@@ -6,7 +6,7 @@ d4m-nfs blantently steals from the way that DockerRoot/xhyve used NFS mounts to 
 
 The advantage of this over a file sync strategy is simpler, less overhead and not having to duplicate files.
 
-In order to make use of NFS, you will want to run ./d4m-nfs.sh before bringing up your containers, **please note this must be run via the bash shell and not the sh shell**. You will either need to change your volume paths to use /mnt, or configure the mounts in etc/d4m-nfs-mounts.txt. Look at the example directory for docker or docker-compose simple examples and an example d4m-nfs-mounts.txt.
+In order to make use of NFS, you will want to run ./d4m-nfs.sh before bringing up your containers, **please note this must be run via the bash shell and not the sh shell**. You will either need to change your volume paths to use /mnt, or configure the mounts in etc/d4m-nfs-mounts.txt. Look at the example directory for docker or docker-compose simple examples and an example d4m-nfs-mounts.txt. Please keep in mind that since NFS is the underlying glue that is this project, that all rules of NFS must be followed. Unlike Docker which creates the directory for you, if it doesn't exist, NFS needs it to exist. Since NFS and Docker have no idea of the other, it is up to you to create the skeleton directory structure for bootstrap.  The way in which I often bootstrap is start up a stack normally without using NFS, use docker cp to get what the containers of docker had made, and then use that copied directory to map it via a Docker volume.
 
 By default, if the script doesn't find any other volumes bound to /mnt in your etc/d4m-nfs-mounts.txt, it will mount your home directory (eg. /Users/username) on /mnt to be exposed for the container. If you'd like to disable this, you may set the environment variable AUTO_MOUNT_HOME to false.
 
@@ -29,13 +29,14 @@ Please note:
 # Opening Github Issues
 **Please keep in mind that everyone's environment is quite unique and this make helping people much harder. In that spirit when opening an issue, please provide the following:**
 
-1. Please ensure you have looked at the "examples" directory in the root of this site.
-2. include the text of the any approriate error message
-3. screenshot of Docker for Mac's Preferences -> File Sharing
-4. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
-5. attachment of /tmp/d4m-mount-nfs.sh
-6. attachment of /tmp/d4m-nfs-mounts.txt
-7. attachment of /etc/exports
+1. Comment out mounts from compose file and add them one at a time. Due to NFS, d4m-nfs cannot make the empty directory structure and will error.  Read paragraphs above for more.
+2. Please ensure you have looked at the "examples" directory in the root of this site.
+3. include the text of the any approriate error message
+4. screenshot of Docker for Mac's Preferences -> File Sharing
+5. attachment of d4m-nfs/etc/d4m-nfs-mounts.txt
+6. attachment of /tmp/d4m-mount-nfs.sh
+7. attachment of /tmp/d4m-nfs-mounts.txt
+8. attachment of /etc/exports
 
 ## Common Problem
 It appears as though a number of people are blindly copying the mounts from the preference in Docker for Mac to d4m-nfs/etc/d4m-nfs-mounts.txt. In doing this they end up having a /Volumes, /private and /Users mounts. If you are getting an error similar to the following, you might of done this:
@@ -45,6 +46,10 @@ ERROR: for applications  Cannot start service applications: Mounts denied: r mor
 ```
 
 In all likelihood this is not what you want. The location /Volumes on a Mac is actually just a symlink to /, and it is never good to export a symlink. On top of that, with NFS, you can not export child directories which are on the same file system, and since both /Users and /private this could cause problems. You probably will need have to clean up your /etc/exports to remove all the lines from # d4m-nfs exports down.
+
+Please keep in mind that since NFS is the underlying glue that is this project, that all rules of NFS must be followed. Unlike Docker which creates the directory for you, if it doesn't exist, NFS needs it to exist. Since NFS and Docker have no idea of the other, it is up to you to create the skeleton directory structure for bootstrap.  The way in which I often bootstrap is start up a stack normally without using NFS, use docker cp to get what the containers of docker had made, and then use that copied directory to map it via a Docker volume.
+
+You may also want to check on the latest file system changes that the Docker team is working on: https://blog.docker.com/2017/05/user-guided-caching-in-docker-for-mac/
 
 
 # Use Stable Docker for Mac channel
