@@ -6,6 +6,9 @@ echo "[`date`][d4m-nfs] Waiting 30 seconds for the Docker VM to become ready"
 sleep 25
 echo "[`date`][d4m-nfs] Starting VM setup"
 
+echo "[`date`][d4m-nfs] Setup for Moby VM APK Cache."
+mkdir ${LIBDIR}/d4m-apk-cache
+
 # check that screen has not already been setup
 if ! $(screen -ls |grep d4m > /dev/null 2>&1); then
 
@@ -17,11 +20,17 @@ if ! $(screen -ls |grep d4m > /dev/null 2>&1); then
 
     rm -f ${LIBDIR}/d4m-done
 
-    until [ -e ${LIBDIR}/d4m-done ]; do
-        echo "[`date`][d4m-nfs] Runing Moby VM d4m-nfs setup script."
-        screen -S d4m -p 0 -X stuff "${LIBDIR}/d4m-mount-nfs.sh
+    echo "[`date`][d4m-nfs] Runing Moby VM d4m-nfs setup script."
+    screen -S d4m -p 0 -X stuff "sh ${LIBDIR}/d4m-mount-nfs.sh        
 "
-        sleep 15
+    echo -n "[`date`][d4m-nfs] Waiting until d4m-nfs setup is done."
+    while [ ! -e ${LIBDIR}/d4m-done ]; do
+      echo -n "."
+      sleep .25
     done
+    echo ""
 
+    rm -f ${LIBDIR}/d4m-done
 fi
+
+echo "[`date`][d4m-nfs] Done."
