@@ -1,4 +1,7 @@
-# d4m-nfs
+# WARNING: Latest Docker for Mac 17.12.0-ce-mac46 seems to [break d4m-nfs](https://github.com/IFSight/d4m-nfs/issues/55).
+# At this time, don't update if you rely on d4m-nfs. 
+
+## d4m-nfs
 
 With the Docker for Mac's (D4M) current implementation of osxfs, depending on how read and write heavy containers are on mounted volumes, performance can be abismal.
 
