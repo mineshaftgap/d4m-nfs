@@ -52,7 +52,7 @@ NFSGID=$(id -g)
 # iterate through the mounts in etc/d4m-nfs-mounts.txt to add exports
 if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
   while read MOUNT; do
-    if ! [[ "$MOUNT" = "#"* ]]; then
+    if ! [[ "$MOUNT" = "#"* || "$MOUNT" =~ ^$ ]]; then
       if [[ "$(echo "$MOUNT" | cut -d: -f3)" != "" ]]; then
         NFSUID=$(echo "$MOUNT" | cut -d: -f3)
       fi
@@ -69,7 +69,7 @@ if [ -e "${SDIR}/etc/d4m-nfs-mounts.txt" ]; then
     fi
   done < "${SDIR}/etc/d4m-nfs-mounts.txt"
 
-  egrep -v '^#' "${SDIR}/etc/d4m-nfs-mounts.txt" > /tmp/d4m-nfs-mounts.txt
+  egrep -v '^#|^$' "${SDIR}/etc/d4m-nfs-mounts.txt" > /tmp/d4m-nfs-mounts.txt
 fi
 
 # if /Users is not in etc/d4m-nfs-mounts.txt then add /Users/$USER
