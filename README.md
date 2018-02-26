@@ -3,6 +3,8 @@
 
 Downgrade at https://docs.docker.com/docker-for-mac/release-notes/#docker-community-edition-17120-ce-mac46-2018-01-09-stable
 
+See https://github.com/IFSight/d4m-nfs/issues/55 for the issues related to upgrading.
+
 ## d4m-nfs
 
 With the Docker for Mac's (D4M) current implementation of osxfs, depending on how read and write heavy containers are on mounted volumes, performance can be abismal.
