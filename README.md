@@ -1,7 +1,7 @@
 # WARNING: Latest Docker for Mac 17.12.0-ce-mac46 seems to [break d4m-nfs](https://github.com/IFSight/d4m-nfs/issues/55).
 # At this time, don't update if you rely on d4m-nfs.
 
-Downgrade at https://docs.docker.com/docker-for-mac/release-notes/#docker-community-edition-17120-ce-mac46-2018-01-09-stable
+Downgrade at https://docs.docker.com/docker-for-mac/release-notes/#docker-community-edition-17120-ce-mac46-2018-01-09-stable - 17.09.1-ce-mac42 is the last known good version.
 
 See https://github.com/IFSight/d4m-nfs/issues/55 for the issues related to upgrading.
 
