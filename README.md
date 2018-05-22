@@ -82,3 +82,20 @@ The easiest way to enable auto reloading is to install [on-save](https://atom.io
 ]
 ```
 
+
+## VS Code
+
+One of the possible solutions is to use [Save and Run](https://github.com/wk-j/vscode-save-and-run) extension with the following config:
+
+```json
+"saveAndRun": {
+  "commands": [
+    {
+      "match": ".*",
+      "cmd": "screen -S d4m -p 0 -X stuff \"touch \\\"${file}\\\"\n\r\"",
+      "useShortcut": false,
+      "silent": true
+     }
+   ]
+}
+```
