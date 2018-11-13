@@ -1,5 +1,7 @@
-# WARNING: Latest Docker for Mac 17.12.0-ce-mac46 seems to [break d4m-nfs](https://github.com/IFSight/d4m-nfs/issues/55).
-# At this time, don't update if you rely on d4m-nfs.
+# UPDATE: 2018-11-13 The Moby VM no longer allows NFS volumes but Docker for Mac now supports them. We are not longer using this project internally. If you are still using d4m-nfs, we suggest you migrate to this new method. We will leave this repository available in order for people to [get help with that](https://github.com/IFSight/d4m-nfs/issues/55#issuecomment-377884136).
+
+## WARNING: Latest Docker for Mac 17.12.0-ce-mac46 seems to [break d4m-nfs](https://github.com/IFSight/d4m-nfs/issues/55).
+## At this time, don't update if you rely on d4m-nfs.
 
 Downgrade at https://docs.docker.com/docker-for-mac/release-notes/#docker-community-edition-17120-ce-mac46-2018-01-09-stable - 17.09.1-ce-mac42 is the last known good version.
 
